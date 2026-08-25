@@ -1,0 +1,76 @@
+const questions = [
+  { q: "عدد المراحل الزمنية الرئيسية لتطور تكنولوجيا المعلومات؟", options: ["3", "4", "5"], answer: "5" },
+  { q: "في أي فترة ظهرت الحواسيب الإلكترونية مثل ENIAC؟", options: ["الأربعينيات-الستينيات", "السبعينيات-الثمانينيات", "التسعينيات"], answer: "الأربعينيات-الستينيات" },
+  { q: "ما التقنية الرئيسية لفترة السبعينيات-الثمانينيات؟", options: ["الحوسبة السحابية", "الحواسيب الشخصية", "الهواتف الذكية"], answer: "الحواسيب الشخصية" },
+  { q: "ماذا حدث في التسعينيات؟", options: ["ظهور الإنترنت التجاري والويب", "ظهور الهواتف الذكية", "انتشار الحوسبة السحابية"], answer: "ظهور الإنترنت التجاري والويب" },
+  { q: "ما أبرز تقنية في العقد الأول من الألفية؟", options: ["الهواتف الذكية", "الحوسبة الكمومية", "الحوسبة السحابية"], answer: "الهواتف الذكية" },
+  { q: "ما أبرز تقنية في العقد الثاني من الألفية؟", options: ["الحوسبة السحابية", "الحواسيب الشخصية", "الويب"], answer: "الحوسبة السحابية" },
+  { q: "ما هو قانون مور؟", options: ["قانون فيزيائي", "ملاحظة لتضاعف الترانزستورات", "قاعدة رياضية"], answer: "ملاحظة لتضاعف الترانزستورات" },
+  { q: "بمعدل كم يتضاعف عدد الترانزستورات؟", options: ["كل سنة", "كل عامين", "كل خمس سنوات"], answer: "كل عامين" },
+  { q: "اذكر تحديين واجهتهما الدوائر عند التصغير.", options: ["تيارات التسرب والتأثيرات الكمومية", "زيادة الحجم", "قلة السرعة"], answer: "تيارات التسرب والتأثيرات الكمومية" },
+  { q: "ما الفرق بين الحوسبة الكمومية والتقليدية؟", options: ["الكمومية بديل كامل", "الكمومية لمسائل محددة فقط", "لا فرق"], answer: "الكمومية لمسائل محددة فقط" }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let studentName = "";
+
+function startQuiz() {
+  studentName = document.getElementById("student-name").value;
+  if (studentName.trim() === "") {
+    alert("من فضلك أدخل اسمك");
+    return;
+  }
+  document.getElementById("student-input").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  showQuestion();
+}
+
+function showQuestion() {
+  document.getElementById("question").innerText = questions[currentQuestion].q;
+  let optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  questions[currentQuestion].options.forEach(opt => {
+    let btn = document.createElement("div");
+    btn.innerText = opt;
+    btn.classList.add("option");
+    btn.onclick = () => checkAnswer(btn, opt);
+    optionsDiv.appendChild(btn);
+  });
+  updateProgress();
+}
+
+function checkAnswer(btn, answer) {
+  if (answer === questions[currentQuestion].answer) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+  }
+  document.querySelectorAll(".option").forEach(o => o.onclick = null);
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    showQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function updateProgress() {
+  const progress = document.getElementById("progress");
+  progress.style.width = ((currentQuestion + 1) / questions.length) * 100 + "%";
+}
+
+function finishQuiz() {
+  document.getElementById("quiz").style.display = "none";
+  const scorePercent = (score / questions.length) * 100;
+  const scoreText = "درجتك: " + score + " من " + questions.length + " (" + scorePercent.toFixed(0) + "%)";
+  
+  document.getElementById("certificate").style.display = "block";
+  document.getElementById("congrats").innerText = "أحسنت يا " + studentName + "! لقد أنهيت الاختبار.";
+  document.getElementById("cert-student").innerText = "الطالب: " + studentName;
+  document.getElementById("final-score").innerText = scoreText;
+}
