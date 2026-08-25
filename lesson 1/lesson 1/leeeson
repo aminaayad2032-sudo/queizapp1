@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>اختبار تطور تكنولوجيا المعلومات</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="quiz-container">
+    <h1>اختبار تطور تكنولوجيا المعلومات</h1>
+    <div id="student-input">
+      <label>ادخل اسم الطالب:</label>
+      <input type="text" id="student-name" placeholder="اسمك هنا">
+      <button onclick="startQuiz()">ابدأ الاختبار</button>
+    </div>
+    <div id="quiz" style="display:none;">
+      <div id="progress-bar"><div id="progress"></div></div>
+      <div id="question"></div>
+      <div id="options"></div>
+      <button id="next-btn" onclick="nextQuestion()">التالي</button>
+    </div>
+    <div id="certificate" style="display:none;">
+      <h2>🎉 تهانينا 🎉</h2>
+      <p id="congrats"></p>
+      <div class="certificate-box">
+        <h3>شهادة تقدير</h3>
+        <p id="cert-student"></p>
+        <p id="final-score"></p>
+        <p>إعداد المهندسة أمينة عياد</p>
+      </div>
+    </div>
+    <footer>إعداد المهندسة أمينة عياد</footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  background: skyblue url('https://www.transparenttextures.com/patterns/bubbles.png');
+  font-family: 'Tahoma', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#quiz-container {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 600px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+h1 {
+  color: #000;
+  font-size: 22px;
+}
+
+#question {
+  font-size: 20px;
+  color: #000;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.option {
+  display: block;
+  background: #eee;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+  color: purple;
+  transition: 0.3s;
+}
+
+.option:hover {
+  background: #dcdcdc;
+}
+
+.option.correct {
+  background: #4CAF50;
+  color: white;
+}
+
+.option.wrong {
+  background: #f44336;
+  color: white;
+}
+
+button {
+  background: #0095DD;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  margin-top: 15px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #0077aa;
+}
+
+#progress-bar {
+  width: 100%;
+  background: #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+#progress {
+  height: 15px;
+  width: 0%;
+  background: purple;
+  border-radius: 8px;
+}
+
+.certificate-box {
+  border: 2px solid #0077aa;
+  padding: 20px;
+  margin-top: 15px;
+  background: #f0f8ff;
+  border-radius: 10px;
+}const questions = [
+  { q: "عدد المراحل الزمنية الرئيسية لتطور تكنولوجيا المعلومات؟", options: ["3", "4", "5"], answer: "5" },
+  { q: "في أي فترة ظهرت الحواسيب الإلكترونية مثل ENIAC؟", options: ["الأربعينيات-الستينيات", "السبعينيات-الثمانينيات", "التسعينيات"], answer: "الأربعينيات-الستينيات" },
+  { q: "ما التقنية الرئيسية لفترة السبعينيات-الثمانينيات؟", options: ["الحوسبة السحابية", "الحواسيب الشخصية", "الهواتف الذكية"], answer: "الحواسيب الشخصية" },
+  { q: "ماذا حدث في التسعينيات؟", options: ["ظهور الإنترنت التجاري والويب", "ظهور الهواتف الذكية", "انتشار الحوسبة السحابية"], answer: "ظهور الإنترنت التجاري والويب" },
+  { q: "ما أبرز تقنية في العقد الأول من الألفية؟", options: ["الهواتف الذكية", "الحوسبة الكمومية", "الحوسبة السحابية"], answer: "الهواتف الذكية" },
+  { q: "ما أبرز تقنية في العقد الثاني من الألفية؟", options: ["الحوسبة السحابية", "الحواسيب الشخصية", "الويب"], answer: "الحوسبة السحابية" },
+  { q: "ما هو قانون مور؟", options: ["قانون فيزيائي", "ملاحظة لتضاعف الترانزستورات", "قاعدة رياضية"], answer: "ملاحظة لتضاعف الترانزستورات" },
+  { q: "بمعدل كم يتضاعف عدد الترانزستورات؟", options: ["كل سنة", "كل عامين", "كل خمس سنوات"], answer: "كل عامين" },
+  { q: "اذكر تحديين واجهتهما الدوائر عند التصغير.", options: ["تيارات التسرب والتأثيرات الكمومية", "زيادة الحجم", "قلة السرعة"], answer: "تيارات التسرب والتأثيرات الكمومية" },
+  { q: "ما الفرق بين الحوسبة الكمومية والتقليدية؟", options: ["الكمومية بديل كامل", "الكمومية لمسائل محددة فقط", "لا فرق"], answer: "الكمومية لمسائل محددة فقط" }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let studentName = "";
+
+function startQuiz() {
+  studentName = document.getElementById("student-name").value;
+  if (studentName.trim() === "") {
+    alert("من فضلك أدخل اسمك");
+    return;
+  }
+  document.getElementById("student-input").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  showQuestion();
+}
+
+function showQuestion() {
+  document.getElementById("question").innerText = questions[currentQuestion].q;
+  let optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  questions[currentQuestion].options.forEach(opt => {
+    let btn = document.createElement("div");
+    btn.innerText = opt;
+    btn.classList.add("option");
+    btn.onclick = () => checkAnswer(btn, opt);
+    optionsDiv.appendChild(btn);
+  });
+  updateProgress();
+}
+
+function checkAnswer(btn, answer) {
+  if (answer === questions[currentQuestion].answer) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+  }
+  document.querySelectorAll(".option").forEach(o => o.onclick = null);
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    showQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function updateProgress() {
+  const progress = document.getElementById("progress");
+  progress.style.width = ((currentQuestion + 1) / questions.length) * 100 + "%";
+}
+
+function finishQuiz() {
+  document.getElementById("quiz").style.display = "none";
+  const scorePercent = (score / questions.length) * 100;
+  const scoreText = "درجتك: " + score + " من " + questions.length + " (" + scorePercent.toFixed(0) + "%)";
+  
+  document.getElementById("certificate").style.display = "block";
+  document.getElementById("congrats").innerText = "أحسنت يا " + studentName + "! لقد أنهيت الاختبار.";
+  document.getElementById("cert-student").innerText = "الطالب: " + studentName;
+  document.getElementById("final-score").innerText = scoreText;
+}
